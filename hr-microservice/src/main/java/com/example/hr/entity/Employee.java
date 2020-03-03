@@ -7,21 +7,32 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.example.validation.Iban;
+import com.example.validation.TcKimlikNo;
+
 @Entity
-@Table(name = "employees")
 @DynamicUpdate
+@Table(name = "employees")
 public class Employee {
-	@Id
 	@Column(name = "tckimlikno")
+	@TcKimlikNo
+	@Id
 	private String identity;
+	@Size(min=3)
 	private String fullname;
+	@Iban
 	private String iban;
 	@Column(name = "maas")
+	@Min(2700)
 	private double salary;
 	private boolean fulltime;
+	@Max(2004)
 	private int birthYear;
 	@Lob
 	@Column(columnDefinition = "longblob")

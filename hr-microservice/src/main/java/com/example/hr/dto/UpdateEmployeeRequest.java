@@ -1,9 +1,14 @@
 package com.example.hr.dto;
 
+import javax.validation.constraints.Min;
+
 import com.example.hr.entity.Department;
+import com.example.validation.Iban;
 
 public class UpdateEmployeeRequest {
+	@Iban
 	private String iban;
+	@Min(2700)
 	private double salary;
 	private boolean fulltime;
 	private byte[] photo;
