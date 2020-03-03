@@ -25,7 +25,8 @@ public class EmployeeService {
 	private EmployeeRepository empRepo;
 
 	public Employee findByIdentity(String identity) {
-		return empRepo.findById(identity).orElseThrow(() -> new IllegalArgumentException("Cannot find employee"));
+		return empRepo.findById(identity).orElseThrow(() -> 	new EmployeeNotFoundException("Cannot find employee to retrieve", "140",
+				"d673bc92-9f6f-44d7-8ef6-716ae1b32861", identity));
 	}
 
 	public List<Employee> findEmployees(int page, int size) {
