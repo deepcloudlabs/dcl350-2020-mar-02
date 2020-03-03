@@ -15,6 +15,8 @@ import com.example.hr.dto.UpdateEmployeeRequest;
 import com.example.hr.entity.Department;
 import com.example.hr.entity.Employee;
 import com.example.hr.repository.EmployeeRepository;
+import com.example.hr.service.exception.DuplicateEmployeeException;
+import com.example.hr.service.exception.EmployeeNotFoundException;
 
 @Service
 public class EmployeeService {
@@ -34,7 +36,9 @@ public class EmployeeService {
 	public Employee addEmployee(Employee employee) {
 		String identity = employee.getIdentity();
 		if (empRepo.existsById(identity)) {
-			throw new IllegalArgumentException("Employee already exists!");
+			throw new DuplicateEmployeeException("Employee already exists!", "100", // ==> i18n
+					"1c94dd33-102c-4aea-b627-900a07215718", // ==> debug
+					identity);
 		}
 		return empRepo.save(employee);
 	}
@@ -43,7 +47,8 @@ public class EmployeeService {
 	public Employee updateEmployee(UpdateEmployeeRequest employee, String identity) {
 		Optional<Employee> emp = empRepo.findById(identity);
 		if (!emp.isPresent())
-			throw new IllegalArgumentException("Cannot find employee to update");
+			throw new EmployeeNotFoundException("Cannot find employee to update", "110",
+					"ad546e2b-cfd8-4ba2-ace9-9af82d14b9d9", identity);
 		Employee managed = emp.get();
 		managed.setIban(employee.getIban());
 		managed.setSalary(employee.getSalary());
@@ -57,7 +62,8 @@ public class EmployeeService {
 	public Employee patchEmployee(Map<String, Object> employee, String identity) {
 		Optional<Employee> emp = empRepo.findById(identity);
 		if (!emp.isPresent())
-			throw new IllegalArgumentException("Cannot find employee to patch");
+			throw new EmployeeNotFoundException("Cannot find employee to patch", "120",
+					"220f5b38-38d2-42dd-8066-95f6390f50a5", identity);
 		Employee managed = emp.get();
 		if (employee.containsKey("department"))
 			employee.put("department", Department.valueOf(employee.get("department").toString()));
@@ -81,7 +87,8 @@ public class EmployeeService {
 	public Employee removeByIdentity(String identity) {
 		Optional<Employee> employee = empRepo.findById(identity);
 		if (!employee.isPresent())
-			throw new IllegalArgumentException("Cannot find employee to delete");
+			throw new EmployeeNotFoundException("Cannot find employee to delete", "130",
+					"accc58f8-4b11-4772-ba07-6829da831468", identity);
 		empRepo.deleteById(identity);
 		return employee.get();
 	}
