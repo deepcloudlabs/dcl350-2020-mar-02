@@ -28,7 +28,6 @@ import com.example.validation.TcKimlikNo;
 
 // localhost:5100/hr/api/v1/employees
 @RestController
-@RequestScope
 @RequestMapping("employees")
 @CrossOrigin
 @Validated

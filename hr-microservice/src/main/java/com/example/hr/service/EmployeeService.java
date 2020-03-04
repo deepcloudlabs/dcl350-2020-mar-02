@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import com.example.hr.service.exception.DuplicateEmployeeException;
 import com.example.hr.service.exception.EmployeeNotFoundException;
 
 @Service
+@Scope("singleton")
 public class EmployeeService {
 	private static final String[] UPDATABLE_FIELDS = { "salary", "iban", "photo", "department", "fulltime" };
 	@Autowired
