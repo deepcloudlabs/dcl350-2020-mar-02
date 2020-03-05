@@ -8,8 +8,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,14 +20,20 @@ import com.example.hr.repository.EmployeeRepository;
 import com.example.hr.service.exception.DuplicateEmployeeException;
 import com.example.hr.service.exception.EmployeeNotFoundException;
 
-@Service
-@Scope("singleton")
+@Service 
 public class EmployeeService {
 	private static final String[] UPDATABLE_FIELDS = { "salary", "iban", "photo", "department", "fulltime" };
 	@Autowired
+	private SimpMessagingTemplate messageTemplate;
+	
 	private EmployeeRepository empRepo;
 	@Value("${server.port}") private int port;
 	
+	@Autowired
+	public void setEmpRepo(EmployeeRepository empRepo) {
+		this.empRepo = empRepo;
+	}
+
 	public Employee findByIdentity(String identity) {
 		return empRepo.findById(identity).orElseThrow(() -> 	new EmployeeNotFoundException("Cannot find employee to retrieve", "140",
 				"d673bc92-9f6f-44d7-8ef6-716ae1b32861", identity));
@@ -46,7 +52,11 @@ public class EmployeeService {
 					"1c94dd33-102c-4aea-b627-900a07215718", // ==> debug
 					identity);
 		}
-		return empRepo.save(employee);
+		Employee saved = empRepo.save(employee);
+		empRepo.flush();
+		messageTemplate.convertAndSend("/topic/changes", 
+				 employee);
+		return saved;
 	}
 
 	@Transactional
