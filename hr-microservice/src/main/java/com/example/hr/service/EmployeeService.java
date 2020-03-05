@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -25,13 +26,15 @@ public class EmployeeService {
 	private static final String[] UPDATABLE_FIELDS = { "salary", "iban", "photo", "department", "fulltime" };
 	@Autowired
 	private EmployeeRepository empRepo;
-
+	@Value("${server.port}") private int port;
+	
 	public Employee findByIdentity(String identity) {
 		return empRepo.findById(identity).orElseThrow(() -> 	new EmployeeNotFoundException("Cannot find employee to retrieve", "140",
 				"d673bc92-9f6f-44d7-8ef6-716ae1b32861", identity));
 	}
 
 	public List<Employee> findEmployees(int page, int size) {
+		System.err.println("Serving at port "+port);
 		return empRepo.findAll(PageRequest.of(page, size)).getContent();
 	}
 
