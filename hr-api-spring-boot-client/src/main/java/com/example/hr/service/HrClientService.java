@@ -1,7 +1,7 @@
 package com.example.hr.service;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -12,34 +12,47 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.netflix.loadbalancer.BaseLoadBalancer;
+import com.netflix.loadbalancer.IRule;
+import com.netflix.loadbalancer.LoadBalancerBuilder;
+import com.netflix.loadbalancer.RoundRobinRule;
+import com.netflix.loadbalancer.Server;
+
 @Service
 public class HrClientService {
-	private static final String URL = "http://%s:%d/hr/api/v1/employees?page=0&size=10";
-	@Autowired 
-	private DiscoveryClient discoveryClient;
-	private List<ServiceInstance> instances;
-	private AtomicInteger counter = 
-			new AtomicInteger();
+	private static final String URL = "//hr/hr/api/v1/employees?page=0&size=10";
+//	@Autowired 
+//	private DiscoveryClient discoveryClient;
+//	private List<ServiceInstance> instances;
+//	private BaseLoadBalancer loadBalancer;
+	/*
 	@PostConstruct
 	public void init() {
-		// spring.application.name
-		instances = discoveryClient.getInstances("hr");		  
-	    instances.forEach( instance -> {
-	    	System.err.println(instance.getHost()
-	    			+ ":" + instance.getPort());
-	    });
+		instances = discoveryClient.getInstances("hr");
+		List<Server> servers = instances.stream()
+				.map( instance -> 
+				new Server(instance.getHost(), 
+						    instance.getPort()))
+				.collect(Collectors.toList()); 
+		IRule roundRobinRule =new RoundRobinRule();
+		loadBalancer = LoadBalancerBuilder.newBuilder()
+			.withRule(roundRobinRule)
+		.buildFixedServerListLoadBalancer(servers);
 	}
+	*/
+	@Autowired
+	private RestTemplate restTemplate;
 	
 	@Scheduled(fixedRate = 1_000)
 	public void callHrApi() {
+		/*
 		RestTemplate rt = new RestTemplate();
-		int index = counter.getAndIncrement() % instances.size();
-		ServiceInstance instance = 
-				      instances.get(index);
+		Server server = loadBalancer.chooseServer();
 		String requestUrl = String.format(URL, 
-			instance.getHost(),instance.getPort());
-		String employees = rt.getForEntity(
-				requestUrl, String.class).getBody();
-		System.out.println(employees);
+				server.getHost(),server.getPort());
+		System.out.println(requestUrl);
+		*/		
+		String employees = restTemplate.getForEntity(
+				URL, String.class).getBody();
 	}
 }
