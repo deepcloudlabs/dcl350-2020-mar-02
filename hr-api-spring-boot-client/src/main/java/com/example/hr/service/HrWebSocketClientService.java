@@ -15,15 +15,15 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 import com.example.hr.entity.Employee;
 
 @Service
-public class HrWebSocketClientService implements 
-                       StompSessionHandler {
+public class HrWebSocketClientService implements StompSessionHandler {
 	@Autowired
 	private WebSocketStompClient wssc;
-	
+
 	@PostConstruct
 	public void connectToHrService() {
 		wssc.connect("ws://localhost:5100/hr/api/v1/changes", this);
 	}
+
 	@Override
 	public Type getPayloadType(StompHeaders headers) {
 		return Employee.class;
