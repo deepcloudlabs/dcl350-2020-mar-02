@@ -32,7 +32,7 @@ public class HrWebSocketClientService implements StompSessionHandler {
 	@Override
 	public void handleFrame(StompHeaders headers, Object payload) {
 		Employee emp = (Employee) payload;
-		System.err.println(emp);
+		System.err.println("Recieved from WebSocket: " + emp);
 	}
 
 	@Override

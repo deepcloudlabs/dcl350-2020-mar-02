@@ -27,7 +27,7 @@ public class HrClientService {
 		System.out.println(msg);
 	}
 
-	@Scheduled(fixedRate = 1_000)
+	//@Scheduled(fixedRate = 1_000)
 	public void callHrApiWithLoadBalancedRestTemplate() {
 		String msg = restTemplate.getForEntity("http://localhost:5100/hr/api/v1/employees?page=0&size=10", String.class).getBody();
 		System.out.println(msg);
