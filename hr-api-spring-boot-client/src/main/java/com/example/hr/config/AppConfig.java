@@ -1,8 +1,11 @@
 package com.example.hr.config;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,10 +20,19 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 @Configuration
 public class AppConfig {
+
 	@Bean
 	@LoadBalanced
-	public RestTemplate restTemplate() {
+	@Qualifier("loadBalanced")
+	public RestTemplate loadBalancedRestTemplate() {
 		return new RestTemplate();
+	}
+	
+	@Bean
+	@Qualifier("standard")
+	public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+		return restTemplateBuilder.setConnectTimeout(Duration.ofSeconds(3)).setReadTimeout(Duration.ofSeconds(3))
+				.build();
 	}
 
 	@Bean
