@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ import com.example.hr.service.exception.EmployeeNotFoundException;
 public class EmployeeService {
 	private static final String[] UPDATABLE_FIELDS = { "salary", "iban", "photo", "department", "fulltime" };
 	@Autowired
-	private SimpMessagingTemplate messageTemplate;
+	private ApplicationEventPublisher publisher;
 	
 	private EmployeeRepository empRepo;
 	@Value("${server.port}") private int port;
@@ -44,7 +45,7 @@ public class EmployeeService {
 		return empRepo.findAll(PageRequest.of(page, size)).getContent();
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = IllegalArgumentException.class)
 	public Employee addEmployee(Employee employee) {
 		String identity = employee.getIdentity();
 		if (empRepo.existsById(identity)) {
@@ -54,8 +55,7 @@ public class EmployeeService {
 		}
 		Employee saved = empRepo.save(employee);
 		empRepo.flush();
-		messageTemplate.convertAndSend("/topic/changes", 
-				 employee);
+		publisher.publishEvent(employee);
 		return saved;
 	}
 
