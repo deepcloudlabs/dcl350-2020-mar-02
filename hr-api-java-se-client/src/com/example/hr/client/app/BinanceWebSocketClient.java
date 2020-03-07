@@ -9,14 +9,14 @@ public class BinanceWebSocketClient {
 	private static final String URL = "wss://stream.binance.com:9443/ws/btcusdt@trade";
 
 	public static void main(String[] args) throws InterruptedException {
-		var client = new BinanceWebsocketClient();
+		var client = new BinanceWebsocketClientListener();
 		HttpClient.newHttpClient().newWebSocketBuilder().buildAsync(URI.create(URL), client);
 		Thread.sleep(60_000);
 	}
 
 }
 
-class BinanceWebsocketClient implements WebSocket.Listener {
+class BinanceWebsocketClientListener implements WebSocket.Listener {
 
 	@Override
 	public void onOpen(WebSocket webSocket) {
