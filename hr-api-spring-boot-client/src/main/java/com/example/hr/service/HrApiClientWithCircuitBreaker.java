@@ -1,9 +1,11 @@
 package com.example.hr.service;
 
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
+@Service
 public class HrApiClientWithCircuitBreaker {
 	@CircuitBreaker(name = "hrService", fallbackMethod = "getFallbackEmployees")
 	public String getEmployees(int page, int size) {

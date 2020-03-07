@@ -14,26 +14,29 @@ import com.example.hr.entity.Employee;
 public class HrClientService {
 	@Autowired
 	private HrService hrSrv;
+	
 	@Autowired
 	private StudyRetryStrategy myBinanceSrv;
+	
 	@Autowired
 	@Qualifier("standard")
 	private RestTemplate restTemplate;
 
-	// @Scheduled(fixedRate = 1_000)
+	@Scheduled(fixedRate = 10_000)
 	public void callHrApi() {
 		System.err.println(hrSrv.getClass());
 		String msg = hrSrv.getir(0, 10).stream().map(Employee::getFullname).collect(Collectors.joining(",", "[", "]"));
 		System.out.println(msg);
 	}
 
-	//@Scheduled(fixedRate = 1_000)
+	@Scheduled(fixedRate = 7_000)
 	public void callHrApiWithLoadBalancedRestTemplate() {
-		String msg = restTemplate.getForEntity("http://localhost:5100/hr/api/v1/employees?page=0&size=10", String.class).getBody();
+		String msg = restTemplate.getForEntity("http://localhost:5100/hr/api/v1/employees?page=0&size=10", String.class)
+				.getBody();
 		System.out.println(msg);
 	}
 
-	// @Scheduled(fixedRate = 10_000)
+	@Scheduled(fixedRate = 10_000)
 	public void callBinanceApi() {
 		System.out.println(myBinanceSrv.getTicker());
 	}

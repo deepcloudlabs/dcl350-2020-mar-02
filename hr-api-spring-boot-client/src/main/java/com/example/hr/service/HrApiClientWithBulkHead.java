@@ -1,9 +1,11 @@
 package com.example.hr.service;
 
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 
+@Service
 public class HrApiClientWithBulkHead {
 	@Bulkhead(name = "hrService", fallbackMethod = "getFallbackEmployees", type = Bulkhead.Type.SEMAPHORE)
 	public String getEmployees(int page, int size) {
