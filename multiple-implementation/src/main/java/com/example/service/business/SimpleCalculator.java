@@ -1,7 +1,6 @@
 package com.example.service.business;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.example.service.Calculator;
@@ -9,7 +8,7 @@ import com.example.service.Calculator;
 @Service
 //@Quality(QualityLevel.SIMPLE)
 //@Profile({ "dev", "test" })
-@ConditionalOnProperty(name = "app.quality",havingValue = "simple")
+@ConditionalOnProperty(name = "app.quality", havingValue = "simple")
 
 public class SimpleCalculator implements Calculator {
 

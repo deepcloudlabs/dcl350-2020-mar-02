@@ -11,14 +11,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.example.service.Calculator;
 
+@SuppressWarnings("unused")
 @SpringBootApplication
 public class MultipleImplementationApplication implements ApplicationRunner {
 	@Autowired
 	private List<Calculator> calculators;
-	
+
 	@Autowired
-	private Map<String,Calculator> calculators2;
-	
+	private Map<String, Calculator> calculators2;
+
 	@Autowired
 	// @Quality(QualityLevel.COMPLEX)
 	private Calculator calc;

@@ -1,7 +1,6 @@
 package com.example.service.business;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.example.service.Calculator;
@@ -9,7 +8,7 @@ import com.example.service.Calculator;
 @Service
 //@Quality(QualityLevel.COMPLEX)
 //@Profile("prod")
-@ConditionalOnProperty(name = "app.quality",havingValue = "complex")
+@ConditionalOnProperty(name = "app.quality", havingValue = "complex")
 public class ComplexCalculator implements Calculator {
 
 	@Override
