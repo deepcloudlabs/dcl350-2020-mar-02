@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import com.example.hr.entity.Employee;
 
 @Service
-public class SimpleKafkaConsumer {
+public class SimpleKafkaScheduledConsumer {
 	private KafkaConsumer<String, Employee> kafkaConsumer;
 
 	@PostConstruct
@@ -36,15 +36,13 @@ public class SimpleKafkaConsumer {
 
 		this.kafkaConsumer = new KafkaConsumer<>(consumerProperties);
 		this.kafkaConsumer.subscribe(Arrays.asList("employees"));
-		new Thread(this::pollMessages).start();
 	}
 
+	@Scheduled(fixedRate = 60_000)
 	public void pollMessages() {
-		while (true) {
-			ConsumerRecords<String, Employee> employees = this.kafkaConsumer.poll(Duration.ofMillis(100));
-			for (ConsumerRecord<String, Employee> employee : employees) {
-				System.out.println("[SimpleKafkaConsumer] Received an employee : " + employee);
-			}
+		ConsumerRecords<String, Employee> employees = this.kafkaConsumer.poll(Duration.ofMillis(100));
+		for (ConsumerRecord<String, Employee> employee : employees) {
+			System.out.println("[SimpleKafkaConsumer] Received an employee : " + employee);
 		}
 	}
 }
